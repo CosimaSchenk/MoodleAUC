@@ -28,7 +28,7 @@ class qbehaviour_auc_responses_renderer extends qbehaviour_renderer {
     
     public function controls(question_attempt $qa, question_display_options $options) {
 
-        # creates HTML for submitButton from general rendererbase-file:
+        // creates HTML for submitButton from general rendererbase-file:
         $submitButton = $this->submit_button($qa, $options);
 
         // Determine whether button should be enabled or not, based on the state of the question:

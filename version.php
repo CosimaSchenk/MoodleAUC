@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component    = 'qbehaviour_auc_responses';
-$plugin->release      = '1.0';
+$plugin->release      = '2.0';
 $plugin->version      = 2024120100;
 $plugin->requires     = 2024100700;
 $plugin->supported    = [405, 500];

@@ -26,42 +26,45 @@ defined('MOODLE_INTERNAL') || die();
 
 class qbehaviour_auc_responses_renderer extends qbehaviour_renderer {
     public function controls(question_attempt $qa, question_display_options $options) {
+        $intryagainstate =
+        $options->readonly === qbehaviour_auc_responses::TRY_AGAIN_VISIBLE ||
+        $options->readonly === qbehaviour_auc_responses::TRY_AGAIN_VISIBLE_READONLY;
+
+        // In this state Moodle should show the submitted wrong answer,
+        // its feedback, and the Try again button. Do not uncheck/disable
+        // the submitted answer yet.
+        if ($intryagainstate) {
+            return '';
+        }
+
         // Create HTML for submit button from base renderer.
         $submitbutton = $this->submit_button($qa, $options);
 
-        // Determine whether button should be enabled or not, based on the state of the question.
         $state = $qa->get_state();
 
-        // If the question state is "todo":
-        // - disable previously given answers
-        // - disable "Next" button
+        // Only after the user has clicked Try again should we disable
+        // previously attempted responses.
         if ($state == question_state::$todo) {
             $previousresponses = [];
 
-            // Look at all previously given answers using step iterator.
             $steps = iterator_to_array($qa->get_step_iterator());
             foreach ($steps as $step) {
                 $qtdataforstep = $step->get_qt_data();
                 $previousresponse = reset($qtdataforstep);
 
-                // Keep the original behaviour: include whatever reset() returns (if not empty).
                 if ($previousresponse !== false && $previousresponse !== null && $previousresponse !== '') {
                     $previousresponses[] = $previousresponse;
                 }
             }
 
-            // Call AMD module to apply the same DOM changes previously done via inline scripts.
             $disablenext = true;
             $this->page->requires->js_call_amd(
                 'qbehaviour_auc_responses/attempt_controls',
                 'init',
                 [$previousresponses, $disablenext]
             );
-
-            return $submitbutton;
         }
 
-        // Otherwise: simply return submit button.
         return $submitbutton;
     }
 

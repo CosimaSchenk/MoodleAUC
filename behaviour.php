@@ -84,6 +84,11 @@ class qbehaviour_auc_responses extends question_behaviour_with_multiple_tries {
         // Now call the base class method, but protect some fields from being overwritten.
         $save = clone($options);
         parent::adjust_display_options($options);
+
+        // Keep the special TRY_AGAIN_VISIBLE / TRY_AGAIN_VISIBLE_READONLY marker.
+        // The renderer uses this to decide whether to output the Try again button.
+        $options->readonly = $save->readonly;
+
         $options->feedback = $save->feedback;
         $options->numpartscorrect = $save->numpartscorrect;
     }
